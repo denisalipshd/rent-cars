@@ -59,7 +59,9 @@
             </div>
             </div>
         @empty
-            <p class="text-center text-gray-500">No cars found.</p>
+             <div class="col-span-full flex justify-center">
+                <p class="text-gray-500">No cars found.</p>
+            </div>
         @endforelse
       </div>
     </section>

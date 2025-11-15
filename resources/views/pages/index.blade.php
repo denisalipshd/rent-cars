@@ -29,7 +29,7 @@
           </div>
 
           <!-- FORM CARI MOBIL -->
-          <form action="">
+          <form action="{{ route('front.rent-cars.search') }}" method="GET">
             <div class="max-w-[90%] w-11/12 absolute left-1/2 bottom-0 transform -translate-x-1/2 translate-y-1/2 z-10 mx-auto bg-white shadow-lg py-8 px-6 md:px-12 md:py-12 rounded-2xl">
               <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6">
                 <!-- Card 1: Brand -->
@@ -37,7 +37,7 @@
                   <span class="font-bold text-sm md:text-base">Select Brand</span>
                   <div class="border border-gray-400 py-2 px-4 rounded-xl flex items-center gap-2">
                     <i class="fa-solid fa-car text-blue-500"></i>
-                    <select class="w-full bg-transparent focus:outline-none text-xs md:text-sm text-gray-700">
+                    <select name="brand_id" class="w-full bg-transparent focus:outline-none text-xs md:text-sm text-gray-700">
                       <option value="">Choose brand</option>
                       @foreach($brands as $brand)
                         <option value="{{ $brand->id }}">{{ $brand->name }}</option>
@@ -51,7 +51,7 @@
                   <span class="font-bold text-sm md:text-base">Pick up Date</span>
                   <div class="border border-gray-400 py-2 px-4 rounded-xl flex items-center gap-2">
                     <i class="fa-solid fa-calendar-days text-blue-500"></i>
-                    <input type="date" class="w-full bg-transparent focus:outline-none text-xs md:text-sm text-gray-700" />
+                    <input type="date" name="pickup_date" class="w-full bg-transparent focus:outline-none text-xs md:text-sm text-gray-700" />
                   </div>
                 </div>
 
@@ -60,7 +60,7 @@
                   <span class="font-bold text-sm md:text-base">Return Date</span>
                   <div class="border border-gray-400 py-2 px-4 rounded-xl flex items-center gap-2">
                     <i class="fa-solid fa-calendar-days text-blue-500"></i>
-                    <input type="date" class="w-full bg-transparent focus:outline-none text-xs md:text-sm text-gray-700" />
+                    <input type="date" name="return_date" class="w-full bg-transparent focus:outline-none text-xs md:text-sm text-gray-700" />
                   </div>
                 </div>
 
@@ -90,7 +90,7 @@
       <!-- Grid Card -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <!-- Card -->
-        @foreach($cars as $car)
+        @forelse($cars as $car)
           <div class="card bg-white shadow-xl rounded-2xl overflow-hidden hover:shadow-2xl transition flex flex-col">
             <img src="{{ asset('storage/' . $car->thumbnail) }}" alt="{{ $car->name }}" class="w-full md:h-52 h-auto object-cover rounded-lg p-4" />
 
@@ -134,7 +134,11 @@
               </div>
             </div>
           </div>
-        @endforeach
+        @empty
+          <div class="col-span-full flex justify-center">
+            <p class="text-gray-500">No latest cars found.</p>
+          </div>
+        @endforelse
       </div>
 
       <div class="pt-16 text-center">

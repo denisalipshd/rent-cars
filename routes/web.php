@@ -16,3 +16,5 @@ Route::post('/rentals', [FrontController::class, 'rentals'])->name('front.rental
 
 Route::get('/payment/{rental}', [FrontController::class, 'payment'])->name('front.payment');
 Route::post('/payment/{rental}/store', [FrontController::class, 'paymentStore'])->name('front.payment.store');
+
+Route::get('/rent-cars/search', [FrontController::class, 'rentCarsSearch'])->name('front.rent-cars.search');

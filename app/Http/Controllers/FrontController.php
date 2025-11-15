@@ -8,6 +8,8 @@ use App\Models\Payment;
 use App\Models\Rental;
 use Illuminate\Http\Request;
 
+use function Symfony\Component\Clock\now;
+
 class FrontController extends Controller
 {
     public function index()
@@ -79,12 +81,41 @@ class FrontController extends Controller
             'proof' => 'required|image|mimes:jpg,png,jpeg|max:2048',
         ]);
 
+        $proofPath = $request->file('proof')->store('proofs', 'public');
+
         Payment::create([
             'rental_id' => $rental->id,
             'total_amount' => $request->total_amount,
-            'proof' => $request->file('proof')->store('public/proofs'),
+            'proof' => $proofPath,
         ]);
 
         return redirect()->back()->with('success', 'Payment successful!');
+    }
+
+    public function rentCarsSearch(Request $request)
+    {
+        $request->validate([
+            'pickup_date' => 'required|date',
+            'return_date' => 'required|date|after:pickup_date',
+            'brand_id' => 'nullable|exists:brands,id'
+        ]);
+
+        $pickup = $request->pickup_date;
+        $return = $request->return_date;
+
+        $rentedCars = Rental::where(function ($query) use ($pickup, $return) {
+            $query->where('pickup_date', '<=', $return)
+                ->where('return_date', '>=', $pickup);
+        })->pluck('car_id');
+
+        $cars = Car::whereNotIn('id', $rentedCars);
+
+        if ($request->has('brand_id')) {
+            $cars = $cars->where('brand_id', $request->brand_id);
+        }
+
+        $cars = $cars->get();
+
+        return view('pages.search-cars', compact('cars'));
     }
 }
